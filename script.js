@@ -119,3 +119,40 @@ document.querySelectorAll('.btn-paper').forEach(btn => {
     modal.show();
   });
 });
+
+// Initialize EmailJS
+(function () {
+  emailjs.init("wzawm93BlVmmk6g-F"); // ✅ Public Key
+})();
+
+// Form submit handler
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("contactForm");
+  const status = document.getElementById("statusMessage");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    status.style.color = "black";
+    status.textContent = "Sending message...";
+
+    emailjs
+      .sendForm(
+        "service_2yhhtuv",   // ✅ Service ID
+        "template_pvzumr8",  // ✅ Template ID
+        form
+      )
+      .then(
+        function () {
+          status.style.color = "green";
+          status.textContent = "✅ Message sent successfully!";
+          form.reset();
+        },
+        function (error) {
+          status.style.color = "red";
+          status.textContent = "❌ Failed to send message.";
+          console.error("EmailJS Error:", error);
+        }
+      );
+  });
+});
