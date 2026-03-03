@@ -71,8 +71,23 @@ document.getElementById('year').textContent = new Date().getFullYear();
 // Contact form submission
 document.getElementById('contactForm').addEventListener('submit', function(e) {
   e.preventDefault();
-  alert('Thank you for your message! I will get back to you soon.');
-  this.reset();
+  
+  const btn = this.querySelector('button[type="submit"]');
+  const originalText = btn.textContent;
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+
+  emailjs.sendForm('service_2yhhtuv', 'template_pvzumr8', this, 'wzawm93BlVmmk6g-F')
+    .then(function() {
+      alert('Thank you! Your message has been sent successfully.');
+      document.getElementById('contactForm').reset();
+    }, function(error) {
+      alert('Failed to send message. Please try again or contact me directly via email.');
+    })
+    .finally(function() {
+      btn.textContent = originalText;
+      btn.disabled = false;
+    });
 });
 
 // Smooth scroll for navigation links
@@ -117,42 +132,5 @@ document.querySelectorAll('.btn-paper').forEach(btn => {
     document.getElementById('modalCertificateImg').src = certImg.src;
     document.getElementById('modalCertificateImg').alt = certImg.alt;
     modal.show();
-  });
-});
-
-// Initialize EmailJS
-(function () {
-  emailjs.init("wzawm93BlVmmk6g-F"); // ✅ Public Key
-})();
-
-// Form submit handler
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.getElementById("contactForm");
-  const status = document.getElementById("statusMessage");
-
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    status.style.color = "black";
-    status.textContent = "Sending message...";
-
-    emailjs
-      .sendForm(
-        "service_2yhhtuv",   // ✅ Service ID
-        "template_pvzumr8",  // ✅ Template ID
-        form
-      )
-      .then(
-        function () {
-          status.style.color = "green";
-          status.textContent = "✅ Message sent successfully!";
-          form.reset();
-        },
-        function (error) {
-          status.style.color = "red";
-          status.textContent = "❌ Failed to send message.";
-          console.error("EmailJS Error:", error);
-        }
-      );
   });
 });
